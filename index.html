@@ -252,13 +252,15 @@
                 
                 renderHomeList(globalData);
                 
-                // 設定日期 (簡單抓今天日期)
+                // 自動抓取第一場的日期與馬場來顯示
                 if (data.length > 0) {
                     const dateInfo = data[0].date || "未有日期";
                     const venueInfo = data[0].venue || "未有地點";
                     
-                    document.querySelector('#today-info span:first-child').innerText = `📅 ${dateInfo}`;
-                    document.querySelector('#today-info span:last-child').innerText = `📍 ${venueInfo}`;
+                    document.querySelector('#today-info span:first-child').innerText = 
+                        `📅 ${dateInfo}`;
+                    document.querySelector('#today-info span:last-child').innerText = 
+                        `📍 ${venueInfo}`;
                 }
 
                 document.getElementById('loading-mask').style.display = 'none';
@@ -276,13 +278,12 @@
             container.innerHTML = '';
 
             data.forEach(race => {
-                // 生成顏色方塊 HTML
+                // 五色馬
                 let colorsHtml = '';
                 const colorClasses = ['bg-red', 'bg-red', 'bg-yellow', 'bg-green', 'bg-blue'];
                 
                 if (race.colors && race.colors.length > 0) {
                     race.colors.forEach((num, index) => {
-                        // 確保有數字且不為空才顯示
                         let displayNum = num.trim();
                         if(displayNum !== "" && displayNum !== "undefined" && index < 5) {
                             colorsHtml += `<div class="c-block ${colorClasses[index]}">${displayNum}</div>`;
@@ -315,7 +316,6 @@
             });
         }
 
-        // 頁面切換：進入內頁
         function goToRace(raceId) {
             const race = globalData.find(r => r.id === raceId);
             if (!race) return;
@@ -331,7 +331,6 @@
             window.scrollTo(0,0);
         }
 
-        // 頁面切換：返回首頁
         function goHome() {
             document.getElementById('page-detail').classList.remove('active');
             document.getElementById('page-home').classList.add('active');
@@ -340,22 +339,21 @@
             document.getElementById('pageTitle').innerText = '小強“賽馬研究所“';
         }
 
-        // 渲染馬匹列表
         function renderHorses(horses) {
             const container = document.getElementById('horse-container');
             container.innerHTML = '';
 
-            // 這裡已經是後端排好序 (Column K) 的資料了
+            // horses 已經是排好序 (根據 K 欄) 的資料
             horses.forEach(h => {
                 const card = document.createElement('div');
                 card.className = 'horse-card';
                 card.onclick = function() { toggleDetail(this); };
                 
-                // 處理 undefined 或空值
                 const targetIcon = h.icon ? h.icon : '';
                 const comment = h.comment || '暫無短評';
                 const reason = h.reason || ''; 
-                // 防呆：如果排序是 undefined，顯示 -
+                
+                // 這裡讀取的是 I 欄 (賠率排序)
                 const rankDisplay = (h.oddsRank && h.oddsRank !== "undefined") ? h.oddsRank : "-";
 
                 card.innerHTML = `
@@ -368,7 +366,10 @@
                             </div>
                         </div>
                         <div class="h-stat-box odds-val">${h.odds}</div>
+                        
+                        <!-- 顯示 I 欄 (賠率排序) -->
                         <div class="h-stat-box rank-val">${rankDisplay}</div>
+                        
                         <div class="h-stat-box pos-val">${h.pos}</div>
                     </div>
                     <div class="h-details">
@@ -388,7 +389,6 @@
             });
         }
 
-        // 展開/收起
         function toggleDetail(card) {
             card.classList.toggle('expanded');
             const content = card.querySelector('.h-details');
