@@ -238,7 +238,7 @@
 
     <script>
         // ============================================
-        // 🔴 請在這裡貼上你的 Google Script 網址
+        // 🔴 請在這裡貼上你的 Google Script 網址 (記得換這條長網址!)
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzITGOiw4hgVdvfYgDJgyHugojYQ1G4YXy-_7fn2OeCQuvPeL4UJm0JQTYHoDsCqrA6/exec";
         // ============================================
 
@@ -284,7 +284,10 @@
                 
                 if (race.colors && race.colors.length > 0) {
                     race.colors.forEach((num, index) => {
-                        let displayNum = num.trim();
+                        // 🟢 修正點在此：強制將 num 轉為字串 (String) 再做 trim
+                        let val = String(num); 
+                        let displayNum = val.trim();
+                        
                         if(displayNum !== "" && displayNum !== "undefined" && index < 5) {
                             colorsHtml += `<div class="c-block ${colorClasses[index]}">${displayNum}</div>`;
                         }
@@ -353,8 +356,8 @@
                 const comment = h.comment || '暫無短評';
                 const reason = h.reason || ''; 
                 
-                // 這裡讀取的是 I 欄 (賠率排序)
-                const rankDisplay = (h.oddsRank && h.oddsRank !== "undefined") ? h.oddsRank : "-";
+                // 讀取 I 欄 (賠率排序)
+                const rankDisplay = (h.oddsRankDisplay && h.oddsRankDisplay !== "undefined") ? h.oddsRankDisplay : "-";
 
                 card.innerHTML = `
                     <div class="h-main-row">
