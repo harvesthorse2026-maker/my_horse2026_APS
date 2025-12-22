@@ -238,7 +238,7 @@
 
     <script>
         // ============================================
-        // 🔴 請在這裡貼上你的 Google Script 網址 (記得用你那條長的!)
+        // 🔴 請在這裡貼上你的 Google Script 網址 (記得用 script.google.com 那條!)
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzITGOiw4hgVdvfYgDJgyHugojYQ1G4YXy-_7fn2OeCQuvPeL4UJm0JQTYHoDsCqrA6/exec";
         // ============================================
 
@@ -265,7 +265,7 @@
                 document.getElementById('page-home').classList.add('active');
 
             } catch (error) {
-                console.error(error); // 在 Console 顯示錯誤，方便除錯
+                console.error(error);
                 alert("資料讀取失敗，請檢查網路或 Script 網址。\n" + error);
                 document.getElementById('loading-mask').innerText = "讀取失敗";
             }
@@ -277,29 +277,20 @@
             container.innerHTML = '';
 
             data.forEach(race => {
-                // 五色馬
                 let colorsHtml = '';
                 const colorClasses = ['bg-red', 'bg-red', 'bg-yellow', 'bg-green', 'bg-blue'];
                 
                 if (race.colors && Array.isArray(race.colors)) {
                     race.colors.forEach((num, index) => {
-                        // 🛑 V8 強力修正：三重防呆，確保絕對不出錯
                         try {
-                            // 1. 如果是 null 或 undefined，變空字串
-                            if (num === null || num === undefined) {
-                                num = "";
-                            }
-                            // 2. 強制轉為文字 (處理數字問題)
+                            if (num === null || num === undefined) num = "";
                             let val = String(num); 
-                            // 3. 修剪空格
                             let displayNum = val.trim();
                             
-                            // 只有當不為空時才顯示
                             if(displayNum !== "" && displayNum !== "undefined" && index < 5) {
                                 colorsHtml += `<div class="c-block ${colorClasses[index]}">${displayNum}</div>`;
                             }
                         } catch (e) {
-                            // 就算出錯都唔好崩潰，直接忽略呢格
                             console.log("Color parsing error", e); 
                         }
                     });
@@ -367,7 +358,7 @@
                 const comment = h.comment || '暫無短評';
                 const reason = h.reason || ''; 
                 
-                // 讀取 I 欄 (賠率排序)
+                // 這裡讀取的是 I 欄 (賠率排序)，只作顯示，不作排序
                 const rankDisplay = (h.oddsRankDisplay && h.oddsRankDisplay !== "undefined") ? h.oddsRankDisplay : "-";
 
                 card.innerHTML = `
