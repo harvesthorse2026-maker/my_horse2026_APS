@@ -5,229 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>小強“賽馬研究所“</title>
     <style>
-        /* --- 基礎設定 --- */
-        :root {
-            --primary-bg: #f2f4f8;
-            --header-bg: #2c3e50;
-            --card-bg: #ffffff;
-            --text-main: #333333;
-            --text-sub: #666666;
-            --accent-green: #27ae60;
-            --highlight-orange: #f39c12;
-            --odds-red: #e74c3c;
-        }
-
-        body {
-            font-family: "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--primary-bg);
-            margin: 0;
-            padding: 0;
-            color: var(--text-main);
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* 讀取中的遮罩 */
-        #loading-mask {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255,255,255,0.9);
-            z-index: 999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            color: #333;
-        }
-        .spinner {
-            width: 40px; height: 40px;
-            border: 4px solid #ddd;
-            border-top: 4px solid var(--header-bg);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 10px;
-        }
+        :root { --primary-bg: #f2f4f8; --header-bg: #2c3e50; --card-bg: #ffffff; --text-main: #333333; --text-sub: #666666; --accent-green: #27ae60; --highlight-orange: #f39c12; --odds-red: #e74c3c; }
+        body { font-family: "Microsoft JhengHei", sans-serif; background-color: var(--primary-bg); margin: 0; padding: 0; color: var(--text-main); -webkit-tap-highlight-color: transparent; }
+        #loading-mask { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.9); z-index: 999; display: flex; justify-content: center; align-items: center; flex-direction: column; color: #333; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #ddd; border-top: 4px solid var(--header-bg); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* --- 導航欄 --- */
-        .app-header {
-            background-color: var(--header-bg);
-            color: white;
-            padding: 15px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
+        .app-header { background-color: var(--header-bg); color: white; padding: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: space-between; }
         .header-title { font-size: 1.1rem; font-weight: bold; }
-        
-        .back-btn {
-            background: none; border: none; color: white;
-            font-size: 1.2rem; cursor: pointer; padding-right: 15px;
-            display: none;
-        }
-
-        /* --- 頁面容器 --- */
-        .page {
-            display: none; padding: 10px; padding-bottom: 60px;
-            animation: fadeIn 0.3s ease;
-        }
+        .back-btn { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; padding-right: 15px; display: none; }
+        .page { display: none; padding: 10px; padding-bottom: 60px; animation: fadeIn 0.3s ease; }
         .page.active { display: block; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- 首頁 --- */
-        .race-info-header {
-            background: white; padding: 10px 15px; border-radius: 8px;
-            margin-bottom: 10px; font-size: 0.9rem; color: var(--text-sub);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            display: flex; justify-content: space-between;
-        }
-
-        .race-card {
-            background: var(--card-bg); border-radius: 10px; margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden;
-            cursor: pointer; transition: transform 0.1s;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .race-info-header { background: white; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; font-size: 0.9rem; color: var(--text-sub); box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; justify-content: space-between; }
+        .race-card { background: var(--card-bg); border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; cursor: pointer; transition: transform 0.1s; }
         .race-card:active { transform: scale(0.98); }
-
-        .race-card-top {
-            padding: 12px 15px; border-bottom: 1px solid #eee;
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        .race-card-top { padding: 12px 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
         .race-id { font-size: 1.1rem; font-weight: bold; color: #2c3e50; }
         .race-meta { font-size: 0.9rem; color: var(--text-sub); }
-
-        .race-card-body {
-            padding: 12px 15px; display: grid;
-            grid-template-columns: 1fr 1.3fr; gap: 10px;
-        }
+        .race-card-body { padding: 12px 15px; display: grid; grid-template-columns: 1fr 1.3fr; gap: 10px; }
         .stat-row { margin-bottom: 5px; font-size: 0.9rem; display: flex; align-items: center; }
         .stat-label { color: var(--text-sub); margin-right: 5px; font-size: 0.85rem; }
         .stat-value { font-weight: bold; color: #333; }
-
         .color-bar { display: flex; gap: 4px; margin-top: 8px; }
-        .c-block {
-            width: 22px; height: 22px; border-radius: 4px;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 0.8rem; font-weight: bold;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-        .bg-red { background-color: #e74c3c; }
-        .bg-yellow { background-color: #f1c40f; }
-        .bg-green { background-color: #2ecc71; }
-        .bg-blue { background-color: #3498db; }
-
-        /* --- 內頁 --- */
-        .detail-header-info {
-            text-align: center; margin-bottom: 15px; color: #555; font-size: 0.9rem;
-        }
-        .horse-list-header {
-            display: grid; grid-template-columns: 3.5fr 1fr 1fr 1fr;
-            padding: 0 10px 5px 10px; font-size: 0.8rem; color: #888;
-        }
-
-        .horse-card {
-            background: white; border-radius: 8px; margin-bottom: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden;
-        }
-
-        .h-main-row {
-            padding: 12px 10px; display: grid;
-            grid-template-columns: 3.5fr 1fr 1fr 1fr;
-            align-items: center; border-bottom: 1px solid transparent;
-        }
-        .horse-card.expanded .h-main-row {
-            background-color: #f9f9f9; border-bottom: 1px solid #eee;
-        }
-
+        .c-block { width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; font-weight: bold; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .bg-red { background-color: #e74c3c; } .bg-yellow { background-color: #f1c40f; } .bg-green { background-color: #2ecc71; } .bg-blue { background-color: #3498db; }
+        .detail-header-info { text-align: center; margin-bottom: 15px; color: #555; font-size: 0.9rem; }
+        .horse-list-header { display: grid; grid-template-columns: 3.5fr 1fr 1fr 1fr; padding: 0 10px 5px 10px; font-size: 0.8rem; color: #888; }
+        .horse-card { background: white; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; }
+        .h-main-row { padding: 12px 10px; display: grid; grid-template-columns: 3.5fr 1fr 1fr 1fr; align-items: center; border-bottom: 1px solid transparent; }
+        .horse-card.expanded .h-main-row { background-color: #f9f9f9; border-bottom: 1px solid #eee; }
         .h-info-group { display: flex; align-items: center; }
-        .h-num {
-            background-color: var(--accent-green); color: white;
-            width: 24px; height: 24px; border-radius: 4px;
-            display: flex; justify-content: center; align-items: center;
-            font-size: 0.85rem; font-weight: bold; margin-right: 8px; flex-shrink: 0;
-        }
+        .h-num { background-color: var(--accent-green); color: white; width: 24px; height: 24px; border-radius: 4px; display: flex; justify-content: center; align-items: center; font-size: 0.85rem; font-weight: bold; margin-right: 8px; flex-shrink: 0; }
         .h-name-box { display: flex; flex-direction: column; }
         .h-name { font-weight: bold; font-size: 1rem; display: flex; align-items: center; }
         .target-icon { font-size: 0.8rem; margin-left: 5px; }
         .h-sub-info { font-size: 0.75rem; color: #777; margin-top: 2px; }
-
         .h-stat-box { text-align: center; font-size: 0.95rem; font-weight: bold; }
         .odds-val { color: var(--odds-red); background: #fceceb; padding: 2px 4px; border-radius: 4px; }
         .rank-val { color: #333; }
         .pos-val { color: #2980b9; font-size: 0.85rem; }
-
-        .h-details {
-            max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;
-            background-color: #fdfdfd;
-        }
-        .h-details-content {
-            padding: 12px 15px; font-size: 0.9rem; color: #444;
-            line-height: 1.5; border-top: 1px dashed #eee;
-        }
-        
+        .h-details { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background-color: #fdfdfd; }
+        .h-details-content { padding: 12px 15px; font-size: 0.9rem; color: #444; line-height: 1.5; border-top: 1px dashed #eee; }
         .comment-label { color: var(--highlight-orange); font-weight: bold; margin-bottom: 4px; display: block; }
         .reason-section { margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; }
         .reason-label { color: #2980b9; font-weight: bold; font-size: 0.85rem; }
-
-        /* 底部導航 */
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; background: white;
-            border-top: 1px solid #ddd; display: flex; justify-content: space-around;
-            padding: 10px 0; z-index: 99;
-        }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 10px 0; z-index: 99; }
         .nav-item { font-size: 0.7rem; text-align: center; color: #999; }
         .nav-item.active { color: var(--header-bg); }
         .nav-icon { font-size: 1.2rem; display: block; margin-bottom: 2px;}
-
     </style>
 </head>
 <body>
-
-    <!-- 載入中遮罩 -->
-    <div id="loading-mask">
-        <div class="spinner"></div>
-        <div>資料讀取中...</div>
-    </div>
-
-    <!-- 頂部導航 -->
+    <div id="loading-mask"><div class="spinner"></div><div>資料讀取中...</div></div>
     <header class="app-header">
         <button class="back-btn" id="backBtn" onclick="goHome()">❮</button>
         <div class="header-title" id="pageTitle">小強“賽馬研究所“</div>
         <div style="width: 30px;"></div>
     </header>
 
-    <!-- 頁面 1：賽事總表 -->
     <div id="page-home" class="page">
-        <div class="race-info-header" id="today-info">
-            <span>📅 載入中...</span>
-            <span>📍 載入中...</span>
-        </div>
-        <div id="race-list-container">
-            <!-- JS 自動生成 -->
-        </div>
+        <div class="race-info-header" id="today-info"><span>📅 ...</span><span>📍 ...</span></div>
+        <div id="race-list-container"></div>
     </div>
 
-    <!-- 頁面 2：場次詳情 -->
     <div id="page-detail" class="page">
-        <div class="detail-header-info">
-            <span id="detail-race-no">R?</span> - 小強機會提供
-        </div>
+        <div class="detail-header-info"><span id="detail-race-no">R?</span> - 小強機會提供</div>
         <div class="horse-list-header">
-            <div>馬匹資料</div>
-            <div style="text-align:center">賠率</div>
-            <div style="text-align:center">賠率排序</div>
-            <div style="text-align:center">走位</div>
+            <div>馬匹資料</div><div style="text-align:center">賠率</div><div style="text-align:center">賠率排序</div><div style="text-align:center">走位</div>
         </div>
-        <div id="horse-container">
-            <!-- JS 自動生成 -->
-        </div>
+        <div id="horse-container"></div>
     </div>
 
     <div class="bottom-nav">
@@ -238,7 +84,7 @@
 
     <script>
         // ============================================
-        // 🔴 請在這裡貼上你的 Google Script 網址 (記得用 script.google.com 那條!)
+        // 🔴 請在這裡貼上你的 Google Script 長網址
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzITGOiw4hgVdvfYgDJgyHugojYQ1G4YXy-_7fn2OeCQuvPeL4UJm0JQTYHoDsCqrA6/exec";
         // ============================================
 
@@ -252,65 +98,44 @@
                 
                 renderHomeList(globalData);
                 
-                // 設定日期 (簡單抓今天日期)
                 if (data.length > 0) {
-                    const dateInfo = data[0].date || "未有日期";
-                    const venueInfo = data[0].venue || "未有地點";
-                    
-                    document.querySelector('#today-info span:first-child').innerText = `📅 ${dateInfo}`;
-                    document.querySelector('#today-info span:last-child').innerText = `📍 ${venueInfo}`;
+                    document.querySelector('#today-info span:first-child').innerText = `📅 ${data[0].date}`;
+                    document.querySelector('#today-info span:last-child').innerText = `📍 ${data[0].venue}`;
                 }
-
                 document.getElementById('loading-mask').style.display = 'none';
                 document.getElementById('page-home').classList.add('active');
-
             } catch (error) {
                 console.error(error);
-                alert("資料讀取失敗，請檢查網路或 Script 網址。\n" + error);
+                alert("資料讀取失敗，請重新整理。\n" + error);
                 document.getElementById('loading-mask').innerText = "讀取失敗";
             }
         };
 
-        // 渲染首頁列表
         function renderHomeList(data) {
             const container = document.getElementById('race-list-container');
             container.innerHTML = '';
-
             data.forEach(race => {
                 let colorsHtml = '';
                 const colorClasses = ['bg-red', 'bg-red', 'bg-yellow', 'bg-green', 'bg-blue'];
-                
-                // 🛑 修正：移除 trim()，只做最簡單的顯示
-                if (race.colors && Array.isArray(race.colors)) {
+                if (race.colors) {
                     race.colors.forEach((num, index) => {
-                        // 只要不是空的，就顯示
-                        if(num != null && num !== "" && index < 5) {
-                            colorsHtml += `<div class="c-block ${colorClasses[index]}">${num}</div>`;
-                        }
+                        // 簡單顯示，不報錯
+                        if(num && index < 5) colorsHtml += `<div class="c-block ${colorClasses[index]}">${num}</div>`;
                     });
                 }
-
                 const div = document.createElement('div');
                 div.className = 'race-card';
                 div.onclick = () => goToRace(race.id);
                 div.innerHTML = `
-                    <div class="race-card-top">
-                        <span class="race-id">${race.id}</span>
-                        <span class="race-meta">${race.class} ${race.dist}</span>
-                    </div>
+                    <div class="race-card-top"><span class="race-id">${race.id}</span><span class="race-meta">${race.class} ${race.dist}</span></div>
                     <div class="race-card-body">
-                        <div>
-                            <div class="stat-row"><span class="stat-label">評分:</span> ${race.rating}</div>
-                        </div>
+                        <div><div class="stat-row"><span class="stat-label">評分:</span> ${race.rating}</div></div>
                         <div>
                             <div class="stat-row"><span class="stat-label">主力提供:</span> <span class="stat-value">${race.pick}</span></div>
                             <div class="stat-row"><span class="stat-label">主力彩池:</span> <span class="stat-value">${race.pool}</span></div>
-                            <div class="color-bar">
-                                ${colorsHtml}
-                            </div>
+                            <div class="color-bar">${colorsHtml}</div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
                 container.appendChild(div);
             });
         }
@@ -318,14 +143,11 @@
         function goToRace(raceId) {
             const race = globalData.find(r => r.id === raceId);
             if (!race) return;
-
             document.getElementById('page-home').classList.remove('active');
             document.getElementById('page-detail').classList.add('active');
-            
             document.getElementById('backBtn').style.display = 'block';
             document.getElementById('pageTitle').innerText = raceId + " 賽事詳情";
             document.getElementById('detail-race-no').innerText = raceId;
-
             renderHorses(race.horses);
             window.scrollTo(0,0);
         }
@@ -333,7 +155,6 @@
         function goHome() {
             document.getElementById('page-detail').classList.remove('active');
             document.getElementById('page-home').classList.add('active');
-            
             document.getElementById('backBtn').style.display = 'none';
             document.getElementById('pageTitle').innerText = '小強“賽馬研究所“';
         }
@@ -341,8 +162,6 @@
         function renderHorses(horses) {
             const container = document.getElementById('horse-container');
             container.innerHTML = '';
-
-            // horses 已經在後台根據 K 欄排好序
             horses.forEach(h => {
                 const card = document.createElement('div');
                 card.className = 'horse-card';
@@ -351,9 +170,7 @@
                 const targetIcon = h.icon ? h.icon : '';
                 const comment = h.comment || '暫無短評';
                 const reason = h.reason || ''; 
-                
-                // 讀取 I 欄 (賠率排序)
-                const rankDisplay = (h.rankDisplay && h.rankDisplay !== "undefined") ? h.rankDisplay : "-";
+                const rankDisplay = (h.rankDisplay) ? h.rankDisplay : "-"; // I欄
 
                 card.innerHTML = `
                     <div class="h-main-row">
@@ -365,25 +182,15 @@
                             </div>
                         </div>
                         <div class="h-stat-box odds-val">${h.odds}</div>
-                        
-                        <!-- 顯示 I 欄 -->
                         <div class="h-stat-box rank-val">${rankDisplay}</div>
-                        
                         <div class="h-stat-box pos-val">${h.pos}</div>
                     </div>
                     <div class="h-details">
                         <div class="h-details-content">
-                            <span class="comment-label">機會短評 (M欄)：</span>
-                            ${comment}
-                            
-                            ${reason ? `
-                            <div class="reason-section">
-                                <span class="reason-label">詳細分析 (N欄)：</span><br>
-                                ${reason}
-                            </div>` : ''}
+                            <span class="comment-label">機會短評 (M欄)：</span>${comment}
+                            ${reason ? `<div class="reason-section"><span class="reason-label">詳細分析 (N欄)：</span><br>${reason}</div>` : ''}
                         </div>
-                    </div>
-                `;
+                    </div>`;
                 container.appendChild(card);
             });
         }
@@ -391,11 +198,8 @@
         function toggleDetail(card) {
             card.classList.toggle('expanded');
             const content = card.querySelector('.h-details');
-            if (card.classList.contains('expanded')) {
-                content.style.maxHeight = content.scrollHeight + "px";
-            } else {
-                content.style.maxHeight = null;
-            }
+            if (card.classList.contains('expanded')) content.style.maxHeight = content.scrollHeight + "px";
+            else content.style.maxHeight = null;
         }
     </script>
 </body>
