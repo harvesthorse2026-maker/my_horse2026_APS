@@ -280,18 +280,12 @@
                 let colorsHtml = '';
                 const colorClasses = ['bg-red', 'bg-red', 'bg-yellow', 'bg-green', 'bg-blue'];
                 
+                // 🛑 修正：移除 trim()，只做最簡單的顯示
                 if (race.colors && Array.isArray(race.colors)) {
                     race.colors.forEach((num, index) => {
-                        try {
-                            if (num === null || num === undefined) num = "";
-                            let val = String(num); 
-                            let displayNum = val.trim();
-                            
-                            if(displayNum !== "" && displayNum !== "undefined" && index < 5) {
-                                colorsHtml += `<div class="c-block ${colorClasses[index]}">${displayNum}</div>`;
-                            }
-                        } catch (e) {
-                            console.log("Color parsing error", e); 
+                        // 只要不是空的，就顯示
+                        if(num != null && num !== "" && index < 5) {
+                            colorsHtml += `<div class="c-block ${colorClasses[index]}">${num}</div>`;
                         }
                     });
                 }
@@ -348,7 +342,7 @@
             const container = document.getElementById('horse-container');
             container.innerHTML = '';
 
-            // horses 已經是排好序 (根據 K 欄) 的資料
+            // horses 已經在後台根據 K 欄排好序
             horses.forEach(h => {
                 const card = document.createElement('div');
                 card.className = 'horse-card';
@@ -358,8 +352,8 @@
                 const comment = h.comment || '暫無短評';
                 const reason = h.reason || ''; 
                 
-                // 這裡讀取的是 I 欄 (賠率排序)，只作顯示，不作排序
-                const rankDisplay = (h.oddsRankDisplay && h.oddsRankDisplay !== "undefined") ? h.oddsRankDisplay : "-";
+                // 讀取 I 欄 (賠率排序)
+                const rankDisplay = (h.rankDisplay && h.rankDisplay !== "undefined") ? h.rankDisplay : "-";
 
                 card.innerHTML = `
                     <div class="h-main-row">
@@ -372,7 +366,7 @@
                         </div>
                         <div class="h-stat-box odds-val">${h.odds}</div>
                         
-                        <!-- 顯示 I 欄 (賠率排序) -->
+                        <!-- 顯示 I 欄 -->
                         <div class="h-stat-box rank-val">${rankDisplay}</div>
                         
                         <div class="h-stat-box pos-val">${h.pos}</div>
