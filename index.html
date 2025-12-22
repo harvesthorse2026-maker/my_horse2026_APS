@@ -85,7 +85,7 @@
     <script>
         // ============================================
         // 🔴 請在這裡貼上你的 Google Script 長網址
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzITGOiw4hgVdvfYgDJgyHugojYQ1G4YXy-_7fn2OeCQuvPeL4UJm0JQTYHoDsCqrA6/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwulxaOFUKjd_1coiO7-m7CYENgKiu0F3pv8DXJ-SJEJZkx2ogesjnTnNQWEEXABsHl/exec";
         // ============================================
 
         let globalData = []; 
@@ -98,9 +98,12 @@
                 
                 renderHomeList(globalData);
                 
+                // V12 強制讀取：如果有資料，就一定有 date/venue
                 if (data.length > 0) {
-                    document.querySelector('#today-info span:first-child').innerText = `📅 ${data[0].date}`;
-                    document.querySelector('#today-info span:last-child').innerText = `📍 ${data[0].venue}`;
+                    const dateTxt = data[0].date || "---";
+                    const venueTxt = data[0].venue || "---";
+                    document.querySelector('#today-info span:first-child').innerText = `📅 ${dateTxt}`;
+                    document.querySelector('#today-info span:last-child').innerText = `📍 ${venueTxt}`;
                 }
                 document.getElementById('loading-mask').style.display = 'none';
                 document.getElementById('page-home').classList.add('active');
@@ -119,7 +122,7 @@
                 const colorClasses = ['bg-red', 'bg-red', 'bg-yellow', 'bg-green', 'bg-blue'];
                 if (race.colors) {
                     race.colors.forEach((num, index) => {
-                        // 簡單顯示，不報錯
+                        // 確保只是顯示，不報錯
                         if(num && index < 5) colorsHtml += `<div class="c-block ${colorClasses[index]}">${num}</div>`;
                     });
                 }
@@ -170,7 +173,9 @@
                 const targetIcon = h.icon ? h.icon : '';
                 const comment = h.comment || '暫無短評';
                 const reason = h.reason || ''; 
-                const rankDisplay = (h.rankDisplay) ? h.rankDisplay : "-"; // I欄
+                
+                // 讀取 I 欄
+                const rankDisplay = (h.rankDisplay) ? h.rankDisplay : "-"; 
 
                 card.innerHTML = `
                     <div class="h-main-row">
