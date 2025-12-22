@@ -238,7 +238,7 @@
 
     <script>
         // ============================================
-        // 🔴 請在這裡貼上你的 Google Script 網址 (記得換這條長網址!)
+        // 🔴 請在這裡貼上你的 Google Script 網址 (記得用你那條長的!)
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzITGOiw4hgVdvfYgDJgyHugojYQ1G4YXy-_7fn2OeCQuvPeL4UJm0JQTYHoDsCqrA6/exec";
         // ============================================
 
@@ -252,21 +252,20 @@
                 
                 renderHomeList(globalData);
                 
-                // 自動抓取第一場的日期與馬場來顯示
+                // 設定日期 (簡單抓今天日期)
                 if (data.length > 0) {
                     const dateInfo = data[0].date || "未有日期";
                     const venueInfo = data[0].venue || "未有地點";
                     
-                    document.querySelector('#today-info span:first-child').innerText = 
-                        `📅 ${dateInfo}`;
-                    document.querySelector('#today-info span:last-child').innerText = 
-                        `📍 ${venueInfo}`;
+                    document.querySelector('#today-info span:first-child').innerText = `📅 ${dateInfo}`;
+                    document.querySelector('#today-info span:last-child').innerText = `📍 ${venueInfo}`;
                 }
 
                 document.getElementById('loading-mask').style.display = 'none';
                 document.getElementById('page-home').classList.add('active');
 
             } catch (error) {
+                console.error(error); // 在 Console 顯示錯誤，方便除錯
                 alert("資料讀取失敗，請檢查網路或 Script 網址。\n" + error);
                 document.getElementById('loading-mask').innerText = "讀取失敗";
             }
@@ -282,14 +281,26 @@
                 let colorsHtml = '';
                 const colorClasses = ['bg-red', 'bg-red', 'bg-yellow', 'bg-green', 'bg-blue'];
                 
-                if (race.colors && race.colors.length > 0) {
+                if (race.colors && Array.isArray(race.colors)) {
                     race.colors.forEach((num, index) => {
-                        // 🟢 修正點在此：強制將 num 轉為字串 (String) 再做 trim
-                        let val = String(num); 
-                        let displayNum = val.trim();
-                        
-                        if(displayNum !== "" && displayNum !== "undefined" && index < 5) {
-                            colorsHtml += `<div class="c-block ${colorClasses[index]}">${displayNum}</div>`;
+                        // 🛑 V8 強力修正：三重防呆，確保絕對不出錯
+                        try {
+                            // 1. 如果是 null 或 undefined，變空字串
+                            if (num === null || num === undefined) {
+                                num = "";
+                            }
+                            // 2. 強制轉為文字 (處理數字問題)
+                            let val = String(num); 
+                            // 3. 修剪空格
+                            let displayNum = val.trim();
+                            
+                            // 只有當不為空時才顯示
+                            if(displayNum !== "" && displayNum !== "undefined" && index < 5) {
+                                colorsHtml += `<div class="c-block ${colorClasses[index]}">${displayNum}</div>`;
+                            }
+                        } catch (e) {
+                            // 就算出錯都唔好崩潰，直接忽略呢格
+                            console.log("Color parsing error", e); 
                         }
                     });
                 }
