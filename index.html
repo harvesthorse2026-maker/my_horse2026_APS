@@ -8,12 +8,10 @@
         :root { --primary-bg: #f2f4f8; --header-bg: #2c3e50; --card-bg: #ffffff; --text-main: #333333; --text-sub: #666666; --accent-green: #27ae60; --highlight-orange: #f39c12; --odds-red: #e74c3c; }
         body { font-family: "Microsoft JhengHei", sans-serif; background-color: var(--primary-bg); margin: 0; padding: 0; color: var(--text-main); -webkit-tap-highlight-color: transparent; }
         
-        /* Loading */
         #loading-mask { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.9); z-index: 999; display: flex; justify-content: center; align-items: center; flex-direction: column; color: #333; }
         .spinner { width: 40px; height: 40px; border: 4px solid #ddd; border-top: 4px solid var(--header-bg); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         
-        /* Header */
         .app-header { background-color: var(--header-bg); color: white; padding: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: space-between; }
         .header-title { font-size: 1.1rem; font-weight: bold; }
         .back-btn { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; padding-right: 15px; display: none; }
@@ -22,7 +20,7 @@
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Race List (Home) */
+        /* Race Card */
         .race-info-header { background: white; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; font-size: 0.9rem; color: var(--text-sub); box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; justify-content: space-between; }
         .race-card { background: var(--card-bg); border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; cursor: pointer; transition: transform 0.1s; }
         .race-card:active { transform: scale(0.98); }
@@ -34,7 +32,7 @@
         .stat-label { color: var(--text-sub); margin-right: 5px; font-size: 0.85rem; }
         .stat-value { font-weight: bold; color: #333; }
         
-        /* Auto Top 6 Colors */
+        /* 6 Colors */
         .color-bar { display: flex; gap: 4px; margin-top: 8px; }
         .c-block { width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; font-weight: bold; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
         .bg-red { background-color: #e74c3c; } 
@@ -43,7 +41,7 @@
         .bg-blue { background-color: #3498db; }
         .bg-purple { background-color: #9b59b6; } /* 6th horse */
 
-        /* Quick Nav Buttons */
+        /* Quick Nav Buttons (R1, R2...) */
         #quick-nav-container { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 10px; margin-bottom: 10px; scrollbar-width: none; }
         #quick-nav-container::-webkit-scrollbar { display: none; }
         .quick-nav-btn { background: white; border: 1px solid #ddd; color: #666; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; white-space: nowrap; cursor: pointer; transition: all 0.2s; }
@@ -91,15 +89,12 @@
         <div style="width: 30px;"></div>
     </header>
 
-    <!-- Page 1: Home -->
     <div id="page-home" class="page active">
         <div class="race-info-header" id="today-info"><span>📅 ...</span><span>📍 ...</span></div>
         <div id="race-list-container"></div>
     </div>
 
-    <!-- Page 2: Details (with Quick Nav) -->
     <div id="page-detail" class="page">
-        <!-- R1 R2 Buttons -->
         <div id="quick-nav-container"></div>
         <div class="detail-header-info"><span id="detail-race-no">R?</span> - 小強機會提供</div>
         <div class="horse-list-header">
@@ -108,7 +103,6 @@
         <div id="horse-container"></div>
     </div>
 
-    <!-- Page 3: Strategy -->
     <div id="page-strategy" class="page">
         <div id="strategy-container"><div style="text-align:center; padding:20px; color:#888;">載入分析中...</div></div>
     </div>
@@ -132,7 +126,6 @@
                 const response = await fetch(SCRIPT_URL);
                 const json = await response.json();
                 
-                // 處理資料結構
                 if (Array.isArray(json)) {
                     globalData = { races: json, analysis: [] };
                 } else {
@@ -142,7 +135,6 @@
                 renderHomeList(globalData.races);
                 renderStrategy(globalData.analysis);
                 
-                // 設置全場日期/地點 (取第一場的資料)
                 if (globalData.races && globalData.races.length > 0) {
                     const dateTxt = globalData.races[0].date || "---";
                     const venueTxt = globalData.races[0].venue || "---";
@@ -176,7 +168,7 @@
         function renderStrategy(data) {
             const container = document.getElementById('strategy-container');
             if (!data || data.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">暫無分析資料，請確認 Google Sheet 已填寫。</div>';
+                container.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">暫無分析資料。</div>';
                 return;
             }
             container.innerHTML = '';
@@ -193,10 +185,8 @@
             container.innerHTML = '';
             data.forEach(race => {
                 let colorsHtml = '';
-                // 1=Red, 2=Red, 3=Yellow, 4=Green, 5=Blue, 6=Purple
                 const colorClasses = ['bg-red', 'bg-red', 'bg-yellow', 'bg-green', 'bg-blue', 'bg-purple'];
-                
-                // 使用系統自動計算的 top6
+                // 使用自動計算的 top6
                 if (race.top6 && Array.isArray(race.top6)) {
                     race.top6.forEach((num, index) => {
                         if(num && index < 6) {
@@ -221,7 +211,6 @@
             });
         }
 
-        // 新增：渲染快捷導航 (R1, R2...)
         function renderQuickNav(currentRaceId) {
             const container = document.getElementById('quick-nav-container');
             container.innerHTML = '';
@@ -231,7 +220,7 @@
                     btn.className = `quick-nav-btn ${race.id === currentRaceId ? 'active' : ''}`;
                     btn.innerText = race.id;
                     btn.onclick = (e) => {
-                        e.stopPropagation(); // 防止點擊觸發其他事件
+                        e.stopPropagation();
                         goToRace(race.id);
                     };
                     container.appendChild(btn);
@@ -248,7 +237,6 @@
             document.getElementById('pageTitle').innerText = raceId + " 賽事詳情";
             document.getElementById('detail-race-no').innerText = raceId;
             
-            // 執行快捷鍵渲染
             renderQuickNav(raceId);
             renderHorses(race.horses);
             window.scrollTo(0,0);
