@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
-<title>2026-11-04 跑馬地 · 觸角圖（會員版）</title>
+<title>觸角圖 精簡版</title>
 <style>
   :root{
     --bg:#f6f7f9; --card:#ffffff; --ink:#111827; --sub:#6b7280; --line:#e5e7eb;
@@ -49,8 +49,8 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>觸角圖 · 會員版</h1>
-    <div class="meta">2026-11-04（三）跑馬地 · 9 場 · 每晚更新</div>
+    <h1>觸角圖 · 精簡版</h1>
+    <div class="meta" id="meta">—</div>
     <div class="legend">上行＝核心 5｜下行＝(2)</div>
   </header>
   <main id="app"></main>
@@ -69,7 +69,7 @@
    未填 → 留 [] ，畫面顯示「待填」
    ⚠️ 出街版：唔准加位數／分數／賠率／短評
 ──────────────────────────────────────────────────── */
-const META = {"date": "2026-11-04", "venue": "跑馬地", "updated": "2026-11-06 14:21", "src": "touch_map_20261104_R*.json（summary.core5／pool2）"}
+const META = {"date": "2026-11-04", "venue": "跑馬地", "dow": "三", "updated": "2026-11-06 14:53", "src": "touch_map_20261104_R*.json（summary.core5／pool2）"}
 
 const RACES = [
   {
@@ -444,6 +444,10 @@ function raceHtml(x){
 }
 document.getElementById('app').innerHTML = RACES.map(raceHtml).join('');
 document.getElementById('gen').textContent = META.updated;
+document.title = META.date + ' ' + META.venue + ' · 觸角圖 精簡版';
+var mEl = document.getElementById('meta');
+if (mEl) mEl.textContent = META.date + (META.dow ? '（' + META.dow + '）' : '') +
+  (META.venue ? ' ' + META.venue : '') + ' · ' + RACES.length + ' 場 · 每晚更新';
 </script>
 </body>
 </html>
