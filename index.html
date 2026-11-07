@@ -40,6 +40,11 @@
   .no{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;
       padding:0 5px;border-radius:999px;background:#1f2937;color:#fff;font-weight:800;font-size:14px}
   .nm{font-size:16.5px;font-weight:700;letter-spacing:.2px}
+  .sq{font-size:11.5px;font-weight:800;color:#b45309;background:#fffbeb;
+      border:1px solid #f59e0b;border-radius:6px;padding:1px 5px;white-space:nowrap}
+  @media (prefers-color-scheme: dark){
+    .sq{color:#fcd34d;background:#3a2a08;border-color:#b45309}
+  }
   .wait{color:var(--wait);font-size:14px;padding:6px 0}
   footer{margin-top:18px;font-size:12px;color:var(--sub);line-height:1.6;
          border-top:1px solid var(--line);padding-top:10px}
@@ -51,7 +56,7 @@
   <header>
     <h1>觸角圖 · 精簡版</h1>
     <div class="meta" id="meta">—</div>
-    <div class="legend">上行＝核心 5｜下行＝(2)</div>
+    <div class="legend">上行＝核心 5｜下行＝(2)｜<span style="color:#b45309;font-weight:700">縮1-3</span>＝測試縮情強弱（-1＝今場）</div>
   </header>
   <main id="app"></main>
   <footer>
@@ -68,8 +73,9 @@
    每匹寫法：{no:馬號, nm:"馬名"}
    未填 → 留 [] ，畫面顯示「待填」
    ⚠️ 出街版：唔准加位數／分數／賠率／短評
+   ✅ 例外（Alan 2026-11-07 批）：可加 {sq:"縮1 (-1)"} ＝ 測試縮情強弱＋第幾場
 ──────────────────────────────────────────────────── */
-const META = {"date": "2026-11-04", "venue": "跑馬地", "dow": "三", "updated": "2026-11-06 14:53", "src": "touch_map_20261104_R*.json（summary.core5／pool2）"}
+const META = {"date": "2026-11-04", "venue": "跑馬地", "dow": "三", "updated": "2026-11-07 14:57", "src": "touch_map_20261104_R*.json（summary.core5／pool2）"}
 
 const RACES = [
   {
@@ -81,33 +87,40 @@ const RACES = [
     "core5": [
       {
         "no": 1,
-        "nm": "天下寵兒"
+        "nm": "天下寵兒",
+        "b": "J359"
       },
       {
         "no": 4,
-        "nm": "馬運高"
+        "nm": "馬運高",
+        "b": "L175"
       },
       {
         "no": 5,
-        "nm": "辣得金"
+        "nm": "辣得金",
+        "b": "J087"
       },
       {
         "no": 7,
-        "nm": "喆喆友福"
+        "nm": "喆喆友福",
+        "b": "J345"
       },
       {
         "no": 9,
-        "nm": "精益大師"
+        "nm": "精益大師",
+        "b": "H134"
       }
     ],
     "two": [
       {
         "no": 10,
-        "nm": "飈誌"
+        "nm": "飈誌",
+        "b": "J504"
       },
       {
         "no": 3,
-        "nm": "喜樂之星"
+        "nm": "喜樂之星",
+        "b": "L235"
       }
     ]
   },
@@ -120,33 +133,40 @@ const RACES = [
     "core5": [
       {
         "no": 1,
-        "nm": "愛心萬里"
+        "nm": "愛心萬里",
+        "b": "L165"
       },
       {
         "no": 8,
-        "nm": "多利神駒"
+        "nm": "多利神駒",
+        "b": "G292"
       },
       {
         "no": 9,
-        "nm": "幸運福星"
+        "nm": "幸運福星",
+        "b": "K073"
       },
       {
         "no": 10,
-        "nm": "電訊驕陽"
+        "nm": "電訊驕陽",
+        "b": "J332"
       },
       {
         "no": 11,
-        "nm": "大力猴王"
+        "nm": "大力猴王",
+        "b": "G307"
       }
     ],
     "two": [
       {
         "no": 2,
-        "nm": "花果猴王"
+        "nm": "花果猴王",
+        "b": "H455"
       },
       {
         "no": 3,
-        "nm": "暴風一族"
+        "nm": "暴風一族",
+        "b": "K104"
       }
     ]
   },
@@ -159,33 +179,40 @@ const RACES = [
     "core5": [
       {
         "no": 1,
-        "nm": "星辰千帥"
+        "nm": "星辰千帥",
+        "b": "K325"
       },
       {
         "no": 3,
-        "nm": "長勝金剛"
+        "nm": "長勝金剛",
+        "b": "K266"
       },
       {
         "no": 4,
-        "nm": "鼓浪好友"
+        "nm": "鼓浪好友",
+        "b": "J217"
       },
       {
         "no": 5,
-        "nm": "花好月盈"
+        "nm": "花好月盈",
+        "b": "H317"
       },
       {
         "no": 6,
-        "nm": "飛輪霸"
+        "nm": "飛輪霸",
+        "b": "K320"
       }
     ],
     "two": [
       {
         "no": 10,
-        "nm": "棉棉日上"
+        "nm": "棉棉日上",
+        "b": "L323"
       },
       {
         "no": 7,
-        "nm": "王者無雙"
+        "nm": "王者無雙",
+        "b": "L456"
       }
     ]
   },
@@ -198,33 +225,40 @@ const RACES = [
     "core5": [
       {
         "no": 1,
-        "nm": "龍文瑞安"
+        "nm": "龍文瑞安",
+        "b": "L029"
       },
       {
         "no": 8,
-        "nm": "同心"
+        "nm": "同心",
+        "b": "K253"
       },
       {
         "no": 9,
-        "nm": "越駿齊歡"
+        "nm": "越駿齊歡",
+        "b": "L079"
       },
       {
         "no": 10,
-        "nm": "飛躍成就"
+        "nm": "飛躍成就",
+        "b": "K112"
       },
       {
         "no": 12,
-        "nm": "瑞祺威楓"
+        "nm": "瑞祺威楓",
+        "b": "K009"
       }
     ],
     "two": [
       {
         "no": 3,
-        "nm": "同樣世界"
+        "nm": "同樣世界",
+        "b": "L329"
       },
       {
         "no": 7,
-        "nm": "奮鬥輝煌"
+        "nm": "奮鬥輝煌",
+        "b": "J236"
       }
     ]
   },
@@ -237,33 +271,40 @@ const RACES = [
     "core5": [
       {
         "no": 1,
-        "nm": "飛龍在天"
+        "nm": "飛龍在天",
+        "b": "K411"
       },
       {
         "no": 6,
-        "nm": "銳不可當"
+        "nm": "銳不可當",
+        "b": "L205"
       },
       {
         "no": 7,
-        "nm": "合夥飛馳"
+        "nm": "合夥飛馳",
+        "b": "K342"
       },
       {
         "no": 8,
-        "nm": "包裝醒目"
+        "nm": "包裝醒目",
+        "b": "L536"
       },
       {
         "no": 11,
-        "nm": "螢影飛馳"
+        "nm": "螢影飛馳",
+        "b": "K228"
       }
     ],
     "two": [
       {
         "no": 3,
-        "nm": "渡月橋"
+        "nm": "渡月橋",
+        "b": "K334"
       },
       {
         "no": 4,
-        "nm": "實力加"
+        "nm": "實力加",
+        "b": "K058"
       }
     ]
   },
@@ -276,33 +317,40 @@ const RACES = [
     "core5": [
       {
         "no": 1,
-        "nm": "勇霸龍"
+        "nm": "勇霸龍",
+        "b": "J237"
       },
       {
         "no": 3,
-        "nm": "輕功猛男"
+        "nm": "輕功猛男",
+        "b": "J513"
       },
       {
         "no": 4,
-        "nm": "沙井之友"
+        "nm": "沙井之友",
+        "b": "K202"
       },
       {
         "no": 11,
-        "nm": "頑童"
+        "nm": "頑童",
+        "b": "L144"
       },
       {
         "no": 12,
-        "nm": "朗日雪峰"
+        "nm": "朗日雪峰",
+        "b": "J187"
       }
     ],
     "two": [
       {
         "no": 8,
-        "nm": "勝於藍"
+        "nm": "勝於藍",
+        "b": "K476"
       },
       {
         "no": 10,
-        "nm": "醒眼光"
+        "nm": "醒眼光",
+        "b": "L490"
       }
     ]
   },
@@ -315,33 +363,41 @@ const RACES = [
     "core5": [
       {
         "no": 1,
-        "nm": "將睿"
+        "nm": "將睿",
+        "b": "K356"
       },
       {
         "no": 2,
-        "nm": "一定掂"
+        "nm": "一定掂",
+        "b": "J225"
       },
       {
         "no": 5,
-        "nm": "細水長流"
+        "nm": "細水長流",
+        "b": "K562"
       },
       {
         "no": 8,
-        "nm": "做好自己"
+        "nm": "做好自己",
+        "b": "J444"
       },
       {
         "no": 10,
-        "nm": "金錢遊戲"
+        "nm": "金錢遊戲",
+        "b": "L402"
       }
     ],
     "two": [
       {
         "no": 12,
-        "nm": "翠兒威威"
+        "nm": "翠兒威威",
+        "b": "K084"
       },
       {
         "no": 7,
-        "nm": "金滙千帥"
+        "nm": "金滙千帥",
+        "b": "J498",
+        "sq": "縮2 (-1)"
       }
     ]
   },
@@ -354,33 +410,40 @@ const RACES = [
     "core5": [
       {
         "no": 1,
-        "nm": "偵探之神"
+        "nm": "偵探之神",
+        "b": "M070"
       },
       {
         "no": 2,
-        "nm": "觀眾之力"
+        "nm": "觀眾之力",
+        "b": "K107"
       },
       {
         "no": 4,
-        "nm": "家樂龍駒"
+        "nm": "家樂龍駒",
+        "b": "H396"
       },
       {
         "no": 8,
-        "nm": "何方來聲"
+        "nm": "何方來聲",
+        "b": "L481"
       },
       {
         "no": 9,
-        "nm": "烈焰光芒"
+        "nm": "烈焰光芒",
+        "b": "L142"
       }
     ],
     "two": [
       {
         "no": 10,
-        "nm": "關鍵所在"
+        "nm": "關鍵所在",
+        "b": "K154"
       },
       {
         "no": 7,
-        "nm": "辣得準"
+        "nm": "辣得準",
+        "b": "J520"
       }
     ]
   },
@@ -393,33 +456,40 @@ const RACES = [
     "core5": [
       {
         "no": 1,
-        "nm": "長勝隊長"
+        "nm": "長勝隊長",
+        "b": "K379"
       },
       {
         "no": 2,
-        "nm": "乘數表"
+        "nm": "乘數表",
+        "b": "K352"
       },
       {
         "no": 4,
-        "nm": "馭跑得"
+        "nm": "馭跑得",
+        "b": "L193"
       },
       {
         "no": 7,
-        "nm": "天馬行雲"
+        "nm": "天馬行雲",
+        "b": "L221"
       },
       {
         "no": 9,
-        "nm": "首飾悟空"
+        "nm": "首飾悟空",
+        "b": "K314"
       }
     ],
     "two": [
       {
         "no": 10,
-        "nm": "加州本事"
+        "nm": "加州本事",
+        "b": "J370"
       },
       {
         "no": 6,
-        "nm": "事理"
+        "nm": "事理",
+        "b": "L338"
       }
     ]
   }
@@ -430,7 +500,8 @@ function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt
 function chips(list){
   if(!list || !list.length) return '<div class="wait">待填</div>';
   return '<div class="chips">' + list.map(h =>
-    '<span class="chip"><span class="no">' + esc(h.no) + '</span><span class="nm">' + esc(h.nm) + '</span></span>'
+    '<span class="chip"><span class="no">' + esc(h.no) + '</span><span class="nm">' + esc(h.nm) + '</span>' +
+    (h.sq ? '<span class="sq">' + esc(h.sq) + '</span>' : '') + '</span>'
   ).join('') + '</div>';
 }
 function raceHtml(x){
